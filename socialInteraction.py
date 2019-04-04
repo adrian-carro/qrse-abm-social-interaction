@@ -6,10 +6,10 @@ import numpy as np
 import random as rand
 
 # Control variables
-temperature = 5.0
-mu = 3.0
-nAgents = 10
-finalTime = 10
+temperature = 1.0
+mu = 0.5
+nAgents = 1000
+finalTime = 10000
 initialFrequency = 0.5
 randomNumbersSeed = 1
 
@@ -26,6 +26,7 @@ for i in range(nAgents):
         nAgentsUp += 1
     else:
         state.append(0)
+# Store initial state in time series
 ts_nAgentsUp.append(nAgentsUp)
 
 # Start simulation
@@ -42,8 +43,12 @@ while t <= finalTime:
             nAgentsUp += 1
         else:
             state[i] = 0
+    # Store current state in time series
     ts_nAgentsUp.append(nAgentsUp)
     t += 1
 
-# Print results
-print(ts_nAgentsUp)
+# Print results to file
+with open("./Results/nAgentsUp-T" + str(temperature) + ".csv", 'w') as f:
+    for n in ts_nAgentsUp[:-1]:
+        f.write(str(n) + "\n")
+    f.write(str(ts_nAgentsUp[-1]))
