@@ -4,6 +4,7 @@
 from __future__ import division
 import numpy as np
 import random as rand
+import matplotlib.pyplot as plt
 
 # Control variables
 temperature = 1.0
@@ -12,6 +13,8 @@ nAgents = 1000
 finalTime = 10000
 initialFrequency = 0.5
 randomNumbersSeed = 1
+plotResults = True
+writeResults = False
 
 # Set seed for random number generator
 rand.seed(randomNumbersSeed)
@@ -48,7 +51,19 @@ while t <= finalTime:
     t += 1
 
 # Print results to file
-with open("./Results/nAgentsUp-T" + str(temperature) + ".csv", 'w') as f:
-    for n in ts_nAgentsUp[:-1]:
-        f.write(str(n) + "\n")
-    f.write(str(ts_nAgentsUp[-1]))
+if writeResults:
+    with open("./Results/nAgentsUp-T" + str(temperature) + ".csv", 'w') as f:
+        for n in ts_nAgentsUp[:-1]:
+            f.write(str(n) + "\n")
+        f.write(str(ts_nAgentsUp[-1]))
+
+# Plot results
+if plotResults:
+    fig = plt.figure(figsize=(8, 6), facecolor='white')
+    plt.plot(range(finalTime + 1), ts_nAgentsUp, "o-", label="nAgentsUp")
+    plt.xlim(0.0, finalTime)
+    plt.ylim(0.0, 1000)
+    plt.ylabel("nAgentsUp")
+    plt.xlabel("Time")
+    plt.tight_layout()
+    plt.show()
