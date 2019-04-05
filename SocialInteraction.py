@@ -21,6 +21,20 @@ def main():
     # Set seed for random number generator
     rand.seed(random_numbers_seed)
 
+    # Run model
+    ts_n_agents_up = social_interaction_model(temperature, mu, n_agents, final_time, initial_frequency)
+
+    # Print results to file
+    if control_write_results:
+        write_results(temperature, ts_n_agents_up, "nAgentsUp")
+
+    # Plot results
+    if control_plot_results:
+        print("hello")
+        plot_results(final_time, n_agents, ts_n_agents_up, "nAgentsUp")
+
+
+def social_interaction_model(temperature, mu, n_agents, final_time, initial_frequency):
     # Compute initial state of the system
     state = []
     n_agents_up = 0
@@ -51,18 +65,10 @@ def main():
         # Store current state in time series
         ts_n_agents_up.append(n_agents_up)
         t += 1
-
-    # Print results to file
-    if control_write_results:
-        write_results(temperature, n_agents_up, ts_n_agents_up)
-
-    # Plot results
-    if control_plot_results:
-        print("hello")
-        plot_results(final_time, n_agents, ts_n_agents_up, "nAgentsUp")
+    return ts_n_agents_up
 
 
-def write_results(temperature, file_name, time_series):
+def write_results(temperature, time_series, file_name):
     """Prints results to file"""
     with open("./Results/" + file_name + "-T" + str(temperature) + ".csv", 'w') as f:
         for n in time_series[:-1]:
