@@ -6,64 +6,81 @@ import numpy as np
 import random as rand
 import matplotlib.pyplot as plt
 
-# Control variables
-temperature = 0.24
-mu = 0.5
-nAgents = 1000
-finalTime = 10000
-initialFrequency = 0.5
-randomNumbersSeed = 1
-plotResults = True
-writeResults = False
 
-# Set seed for random number generator
-rand.seed(randomNumbersSeed)
+def main():
+    # Control variables
+    temperature = 0.24
+    mu = 0.5
+    n_agents = 1000
+    final_time = 10000
+    initial_frequency = 0.5
+    random_numbers_seed = 1
+    control_plot_results = True
+    control_write_results = False
 
-# Compute initial state of the system
-state = []
-nAgentsUp = 0
-ts_nAgentsUp = []
-for i in range(nAgents):
-    if rand.random() <= initialFrequency:
-        state.append(1)
-        nAgentsUp += 1
-    else:
-        state.append(0)
-# Store initial state in time series
-ts_nAgentsUp.append(nAgentsUp)
+    # Set seed for random number generator
+    rand.seed(random_numbers_seed)
 
-# Start simulation
-t = 1
-while t <= finalTime:
-    # Update the frequency of buying for a given agent (for now, all agents have the same frequency)
-    frequency = 1/(1 + np.exp((mu - nAgentsUp / nAgents) / temperature))
-    nAgentsUp = 0
-    for i, s in enumerate(state):
-        # Synchronous update: all agents update their state at the same time, thus not being aware of the changes of the
-        # other agents till next time step. TODO: Confirm this point with Jangho.
-        if rand.random() <= frequency:
-            state[i] = 1
-            nAgentsUp += 1
+    # Compute initial state of the system
+    state = []
+    n_agents_up = 0
+    ts_n_agents_up = []
+    for i in range(n_agents):
+        if rand.random() <= initial_frequency:
+            state.append(1)
+            n_agents_up += 1
         else:
-            state[i] = 0
-    # Store current state in time series
-    ts_nAgentsUp.append(nAgentsUp)
-    t += 1
+            state.append(0)
+    # Store initial state in time series
+    ts_n_agents_up.append(n_agents_up)
 
-# Print results to file
-if writeResults:
-    with open("./Results/nAgentsUp-T" + str(temperature) + ".csv", 'w') as f:
-        for n in ts_nAgentsUp[:-1]:
+    # Start simulation
+    t = 1
+    while t <= final_time:
+        # Update the frequency of buying for a given agent (for now, all agents have the same frequency)
+        frequency = 1/(1 + np.exp((mu - n_agents_up / n_agents) / temperature))
+        n_agents_up = 0
+        for i, s in enumerate(state):
+            # Synchronous update: all agents update their state at the same time, thus not being aware of the changes
+            # of the other agents till next time step. TODO: Confirm this point with Jangho.
+            if rand.random() <= frequency:
+                state[i] = 1
+                n_agents_up += 1
+            else:
+                state[i] = 0
+        # Store current state in time series
+        ts_n_agents_up.append(n_agents_up)
+        t += 1
+
+    # Print results to file
+    if control_write_results:
+        write_results(temperature, n_agents_up, ts_n_agents_up)
+
+    # Plot results
+    if control_plot_results:
+        print("hello")
+        plot_results(final_time, n_agents, ts_n_agents_up, "nAgentsUp")
+
+
+def write_results(temperature, file_name, time_series):
+    """Prints results to file"""
+    with open("./Results/" + file_name + "-T" + str(temperature) + ".csv", 'w') as f:
+        for n in time_series[:-1]:
             f.write(str(n) + "\n")
-        f.write(str(ts_nAgentsUp[-1]))
+        f.write(str(time_series[-1]))
 
-# Plot results
-if plotResults:
-    fig = plt.figure(figsize=(8, 6), facecolor='white')
-    plt.plot(range(finalTime + 1), ts_nAgentsUp, "o-", label="nAgentsUp")
-    plt.xlim(0.0, finalTime)
-    plt.ylim(0.0, nAgents)
+
+def plot_results(final_time, n_agents, time_series, label):
+    """Performs basic plotting"""
+    plt.figure(figsize=(8, 6), facecolor='white')
+    plt.plot(range(final_time + 1), time_series, "o-", label=label)
+    plt.xlim(0.0, final_time)
+    plt.ylim(0.0, n_agents)
     plt.ylabel("nAgentsUp")
     plt.xlabel("Time")
     plt.tight_layout()
     plt.show()
+
+
+if __name__ == "__main__":
+    main()
