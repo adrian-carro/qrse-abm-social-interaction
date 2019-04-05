@@ -7,7 +7,7 @@ import random as rand
 import matplotlib.pyplot as plt
 
 # Control variables
-temperature = 1.0
+temperature = 0.24
 mu = 0.5
 nAgents = 1000
 finalTime = 10000
@@ -36,7 +36,7 @@ ts_nAgentsUp.append(nAgentsUp)
 t = 1
 while t <= finalTime:
     # Update the frequency of buying for a given agent (for now, all agents have the same frequency)
-    frequency = 1/(1 + np.exp(-(mu - nAgentsUp / nAgents) / temperature))
+    frequency = 1/(1 + np.exp((mu - nAgentsUp / nAgents) / temperature))
     nAgentsUp = 0
     for i, s in enumerate(state):
         # Synchronous update: all agents update their state at the same time, thus not being aware of the changes of the
@@ -62,7 +62,7 @@ if plotResults:
     fig = plt.figure(figsize=(8, 6), facecolor='white')
     plt.plot(range(finalTime + 1), ts_nAgentsUp, "o-", label="nAgentsUp")
     plt.xlim(0.0, finalTime)
-    plt.ylim(0.0, 1000)
+    plt.ylim(0.0, nAgents)
     plt.ylabel("nAgentsUp")
     plt.xlabel("Time")
     plt.tight_layout()
