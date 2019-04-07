@@ -5,6 +5,7 @@
 # ignore results folder
 /Results
 
-# ignore figures
+# ignore figures and videos
 *.eps
 *.pdf
+*.mp4
