@@ -13,7 +13,7 @@ def main():
     mu = 0.5
     n_agents = 1000
     final_time = 10000
-    n_realizations = 10  # Realizations per temperature value
+    n_realizations = 50  # Realizations per temperature value
     initial_frequency = 0.5
     random_numbers_seed = 1
     control_write_results = True

@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 
 
 # Control variables
-temperature = 0.2
+temperature = 0.24
+nAgents = 1000
 
 # Reading model results from file
 with open("./Results/nAgentsUp-T{:.4f}.csv".format(temperature), 'r') as f:
@@ -20,16 +21,15 @@ with open("./Results/nAgentsUp-T{:.4f}.csv".format(temperature), 'r') as f:
 
 # Plot
 fig = plt.figure(figsize=(8, 6), facecolor='white')
-plt.plot(range(len(nAgentsUp[0])), nAgentsUp[0], "o-", label="nAgentsUp")
+plt.plot(range(len(nAgentsUp[0])), nAgentsUp[8], "o-", label="nAgentsUp")
 plt.xlim(0.0, len(nAgentsUp[0]))
-plt.ylim(0.0, 1000)
+plt.ylim(0.0, nAgents)
 plt.ylabel("nAgentsUp")
 plt.xlabel("Time")
 plt.title("T = " + str(temperature))
 # plt.legend()
 plt.tight_layout()
-# plt.savefig('./EmploymentIncomeDist.eps', format='eps', dpi=300, bbox_inches='tight')
-# plt.savefig('./EmploymentIncomeDist.pdf', format='pdf', dpi=300, bbox_inches='tight')
+# plt.savefig("./nAgentsUp-T{:.4f}.eps".format(temperature), format='eps', dpi=300, bbox_inches='tight')
 
 # Show
 plt.show()
