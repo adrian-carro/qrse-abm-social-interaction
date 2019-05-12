@@ -7,8 +7,7 @@ import numpy as np
 
 
 # Control variables
-temperature = 0.23
-nAgents = 1000
+temperature = 0.235
 
 # Reading model results from file
 times = []
@@ -19,12 +18,12 @@ with open("./Results/CrossingTimes-T{:.4f}.csv".format(temperature), 'r') as f:
             times.append(np.log(time2 - time1))
 
 # Creating bins for the histogram
-myBins = np.linspace(1.0, 14.0, 53, endpoint=True)
+myBins = np.linspace(0.0, 14.0, 29, endpoint=True)
 
 # Plot
 fig = plt.figure(figsize=(8, 6), facecolor='white')
 plt.hist(times, bins=myBins, density=True)
-plt.xlim(1.0, 14.0)
+plt.xlim(0.0, 14.0)
 # plt.ylim(0.0, 1.0)
 plt.ylabel("Prob. Density")
 plt.xlabel("Crossing times")

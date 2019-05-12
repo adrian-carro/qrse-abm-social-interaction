@@ -10,12 +10,12 @@ import scipy.optimize as optimize
 
 def main():
     # Control variables
-    # temperatures = np.linspace(0.23, 0.24, 10, endpoint=False)  # List of temperatures to simulate
-    temperatures = [0.24]
+    temperatures = np.linspace(0.26, 0.27, 11, endpoint=True)  # List of temperatures to simulate
+    # temperatures = [0.24, 0.245]
     mu = 0.5
     n_agents = 1000
-    final_time = 10000
-    n_realizations = 1  # Realizations per temperature value
+    final_time = 20000
+    n_realizations = 10  # Realizations per temperature value
     initial_frequency = 0.5
     random_numbers_seed = 1
     control_write_results = True
@@ -61,6 +61,7 @@ def main():
 
             # Advance i for getting new random numbers in the next realisation
             i += 1
+            print("Finished run {} out of {}".format(i, n_realizations * len(temperatures)))
 
         # Print results to file
         if control_write_results:
