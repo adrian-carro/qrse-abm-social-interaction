@@ -10,20 +10,20 @@ import scipy.optimize as optimize
 
 def main():
     # Control variables
-    # temperatures = np.linspace(0.2, 0.3, 41, endpoint=True)  # List of temperatures to simulate
-    temperatures = [0.27]
+    # temperatures = np.linspace(0.23, 0.24, 10, endpoint=False)  # List of temperatures to simulate
+    temperatures = [0.24]
     mu = 0.5
     n_agents = 1000
     final_time = 10000
     n_realizations = 1  # Realizations per temperature value
     initial_frequency = 0.5
     random_numbers_seed = 1
-    control_write_time_series = False
-    control_plot_time_series = False
+    control_write_results = True
+    control_plot_results = False
     control_compute_passage_times = True
 
     # Confirm large number of plots with user
-    check_control_variables(control_write_time_series, control_plot_time_series, control_compute_passage_times,
+    check_control_variables(control_write_results, control_plot_results, control_compute_passage_times,
                             len(temperatures) * n_realizations)
 
     # # # # # # # # # # Time series # # # # # # # # # #
@@ -41,21 +41,21 @@ def main():
                 ts_n_agents_up = social_interaction_model(temperature, mu, n_agents, final_time, initial_frequency)
 
                 # If printing results to file, collect time series for a given temperature
-                if control_write_time_series:
+                if control_write_results:
                     ts_collector.append(ts_n_agents_up)
 
                 # Plot results
-                if control_plot_time_series:
+                if control_plot_results:
                     plot_time_series(final_time, n_agents, ts_n_agents_up, temperature)
 
                 i += 1
 
             # Print results to file
-            if control_write_time_series:
+            if control_write_results:
                 write_time_series(temperature, ts_collector, "nAgentsUp")
 
         # So that plots are shown
-        if control_plot_time_series:
+        if control_plot_results:
             plt.show()
 
     # # # # # # # # # # Passage times # # # # # # # # # #
@@ -63,7 +63,7 @@ def main():
         # Iterate over temperatures and realizations
         i = 0
         for temperature in temperatures:
-            ts_collector = []
+            crossing_times_collector = []
             for realization in range(n_realizations):
 
                 # Set seed for random number generator for this realization and temperature
@@ -82,28 +82,24 @@ def main():
                                                                                               x1 * n_agents,
                                                                                               x2 * n_agents)
 
-                print(crossing_times)
-                plot_time_series_with_crossing_times(final_time, n_agents, ts_n_agents_up, temperature, x1, x2,
-                                                     crossing_times)
-                plt.show()
+                # If printing results to file, collect time series for a given temperature
+                if control_write_results:
+                    crossing_times_collector.append(crossing_times)
 
-        #         # If printing results to file, collect time series for a given temperature
-        #         if control_write_time_series:
-        #             ts_collector.append(crossing_times)
-        #
-        #         # Plot results
-        #         if control_plot_time_series:
-        #             plot_results(final_time, n_agents, crossing_times, temperature)
-        #
-        #         i += 1
-        #
-        #     # Print results to file
-        #     if control_write_time_series:
-        #         write_results(temperature, ts_collector, "nAgentsUp")
-        #
-        # # So that plots are shown
-        # if control_plot_time_series:
-        #     plt.show()
+                # Plot results
+                if control_plot_results:
+                    plot_time_series_with_crossing_times(final_time, n_agents, ts_n_agents_up, temperature, x1, x2,
+                                                         crossing_times)
+                # Advance i for getting new random numbers in the next realisation
+                i += 1
+
+            # Print results to file
+            if control_write_results:
+                write_crossing_times(temperature, crossing_times_collector, "CrossingTimes")
+
+        # So that plots are shown
+        if control_plot_results:
+            plt.show()
 
 
 def social_interaction_model(temperature, mu, n_agents, final_time, initial_frequency):
@@ -172,14 +168,12 @@ def social_interaction_model_with_crossing_times(temperature, mu, n_agents, fina
             else:
                 state[i] = 0
         # Check if any equilibrium line has been crossed and possibly store the time
-        if old_n_agents_up < x1 < n_agents_up or old_n_agents_up > x1 > n_agents_up:
-            if most_recent_equilibrium != 1:
-                crossing_times.append(t)
-                most_recent_equilibrium = 1
-        if old_n_agents_up < x2 < n_agents_up or old_n_agents_up > x2 > n_agents_up:
-            if most_recent_equilibrium != 2:
-                crossing_times.append(t)
-                most_recent_equilibrium = 2
+        if old_n_agents_up > x1 > n_agents_up and most_recent_equilibrium != 1:
+            crossing_times.append(t)
+            most_recent_equilibrium = 1
+        if old_n_agents_up < x2 < n_agents_up and most_recent_equilibrium != 2:
+            crossing_times.append(t)
+            most_recent_equilibrium = 2
         # Update old state with current state
         old_n_agents_up = n_agents_up
         ts_n_agents_up.append(n_agents_up)
@@ -203,6 +197,13 @@ def write_time_series(temperature, time_series_collector, file_name):
                 f.write("%s\n" % ", ".join([str(element) for element in line]))
             else:
                 f.write("%s" % ", ".join([str(element) for element in line]))
+
+
+def write_crossing_times(temperature, crossing_times_collector, file_name):
+    """Prints results to file"""
+    with open("./Results/" + file_name + "-T{:.4f}.csv".format(temperature), 'w') as f:
+        for crossing_times in crossing_times_collector:
+            f.write("%s\n" % ", ".join([str(element) for element in  crossing_times]))
 
 
 def plot_time_series(final_time, n_agents, time_series, temperature):
@@ -238,7 +239,7 @@ def plot_time_series_with_crossing_times(final_time, n_agents, time_series, temp
 def check_control_variables(control_write_results, control_plot_results, control_compute_passage_times,
                             number_of_plots):
     """Checks that control parameter values make sense"""
-    if not control_write_results and not control_plot_results and not control_compute_passage_times:
+    if not control_write_results and not control_plot_results:
         print("Neither writing results nor plotting them!\n"
               "Aborting simulation.")
         exit()
