@@ -13,16 +13,24 @@ temperatures = np.linspace(0.23, 0.27, 41, endpoint=True)  # List of temperature
 avCrossingTimes = []
 stdCrossingTimes = []
 for temperature in temperatures:
+    sumCrossingTimes = 0.0
+    sumCrossingTimes2 = 0.0
+    nCrossingTimes = 0
     with open("./Results/CrossingTimes-T{:.4f}.csv".format(temperature), 'r') as f:
-        sumCrossingTimes = 0.0
-        sumCrossingTimes2 = 0.0
-        nCrossingTimes = 0
         for line in f:
             time_events = [int(x) for x in line.split(",")]
             for time1, time2 in zip(time_events[:-1], time_events[1:]):
                 sumCrossingTimes += time2 - time1
                 sumCrossingTimes2 += (time2 - time1)**2
                 nCrossingTimes += 1
+    if temperature < 0.2350:
+        with open("./Results/CrossingTimesB-T{:.4f}.csv".format(temperature), 'r') as f:
+            for line in f:
+                time_events = [int(x) for x in line.split(",")]
+                for time1, time2 in zip(time_events[:-1], time_events[1:]):
+                    sumCrossingTimes += time2 - time1
+                    sumCrossingTimes2 += (time2 - time1) ** 2
+                    nCrossingTimes += 1
     avCrossingTimes.append(sumCrossingTimes/nCrossingTimes)
     stdCrossingTimes.append(np.sqrt(sumCrossingTimes2/nCrossingTimes - (sumCrossingTimes/nCrossingTimes)**2))
 
