@@ -30,7 +30,7 @@ plt.xlabel("Crossing times")
 plt.title("T = {:.4f}".format(temperature))
 # plt.legend()
 plt.tight_layout()
-# plt.savefig("./CrossingTimesProbDist-T{:.4f}.eps".format(temperature), format='eps', dpi=300, bbox_inches='tight')
+# plt.savefig("./CrossingTimesProbDist-T{:.4f}.pdf".format(temperature), format="pdf", dpi=300, bbox_inches='tight')
 
 # Show
 plt.show()
