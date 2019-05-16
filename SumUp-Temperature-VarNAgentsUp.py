@@ -6,7 +6,10 @@ import numpy as np
 
 
 # Control variables
-temperatures = np.linspace(0.23, 0.27, 41, endpoint=True)  # List of temperatures to simulate
+# temperatures = np.linspace(0.23, 0.27, 41, endpoint=True)  # List of temperatures to simulate
+# temperatures = [0.5]
+# temperatures = np.linspace(0.1, 0.22, 13, endpoint=True)  # List of temperatures to simulate
+temperatures = np.linspace(0.28, 0.9, 63, endpoint=True)  # List of temperatures to simulate
 
 # Reading model results from file
 avNAgentsUp = []
@@ -21,7 +24,7 @@ for temperature in temperatures:
                 sumNAgentsUp += int(element)
                 sumNAgentsUp2 += int(element) ** 2
                 n += 1
-    if temperature < 0.2350:
+    if 0.23 <= temperature < 0.2350:
         with open("./Results/nAgentsUpB-T{:.4f}.csv".format(temperature), 'r') as f:
             for line in f:
                 for element in line.split(","):
@@ -32,6 +35,6 @@ for temperature in temperatures:
     varNAgentsUp.append(sumNAgentsUp2/n - (sumNAgentsUp/n)**2)
 
 # Write summary results to file
-with open("./Results/Summary-Temperature-VarNAgentsUp.csv", "w") as f:
+with open("./Results/Summary-Temperature-VarNAgentsUp-FINALEXTRAPOINTS.csv", "w") as f:
     for temperature, avNAgentsUp_element, varNAgentsUp_element in zip(temperatures, avNAgentsUp, varNAgentsUp):
         f.write("{}, {}, {}\n".format(temperature, avNAgentsUp_element, varNAgentsUp_element))
